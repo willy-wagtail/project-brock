@@ -1,2 +1,0 @@
-- ~~component library ~~ - DONE (`npm install react-bootstrap bootstrap`)
-- linter/prettier
