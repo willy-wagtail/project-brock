@@ -1,4 +1,10 @@
-import { Reducer, useEffect, useReducer } from "react";
+import {
+  MutableRefObject,
+  Reducer,
+  useEffect,
+  useReducer,
+  useRef,
+} from "react";
 import { FetchAction } from "./FetchAction";
 import fetchReducer from "./fetchReducer";
 import { FetchState } from "./FetchState";
@@ -7,6 +13,8 @@ const useFetch = <T = unknown>(
   url: string,
   typeGuard: (x: any) => x is T
 ): FetchState<T> => {
+  const isMounted: MutableRefObject<boolean> = useRef<boolean>(false);
+
   const [state, dispatch] = useReducer<Reducer<FetchState<T>, FetchAction<T>>>(
     fetchReducer,
     {
@@ -17,6 +25,8 @@ const useFetch = <T = unknown>(
   );
 
   useEffect(() => {
+    isMounted.current = true;
+
     const init = async () => {
       try {
         const response: Response = await fetch(url);
@@ -37,6 +47,10 @@ const useFetch = <T = unknown>(
     };
 
     init();
+
+    return () => {
+      isMounted.current = false;
+    };
   }, [typeGuard, url]);
 
   return state;
