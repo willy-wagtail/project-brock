@@ -1,19 +1,19 @@
 import { Reducer, useEffect, useReducer } from "react";
 
 /**
- * Models - State
+ * State
  */
 
 export type ResponseNotOk = "ResponseNotOk";
 
 export type UnexpectedResponseType = "UnexpectedResponseType";
 
-export type FetchFailed = "FetchFailed";
+export type UnknownFetchError = "UnknownFetchError";
 
 export type FetchError =
   | ResponseNotOk
   | UnexpectedResponseType
-  | FetchFailed;
+  | UnknownFetchError;
 
 export interface FetchErrorState {
   data: null;
@@ -46,23 +46,23 @@ export type FetchState<T> =
   | FetchErrorState;
 
 /**
- * Models - Events
+ * Events
  */
 
-export interface FetchSucceededEvent<T> {
+interface FetchSucceeded<T> {
   type: "FetchSucceeded";
   data: T;
 }
 
-export interface FetchFailedEvent {
+interface FetchFailedEvent {
   type: "FetchFailed";
   error: FetchError;
 }
 
-export type FetchEvent<T> = FetchSucceededEvent<T> | FetchFailedEvent;
+type FetchEvent<T> = FetchSucceeded<T> | FetchFailedEvent;
 
 /**
- * Models - Type Guards
+ * Type Guards
  */
 
 export const isFetchingState = (
@@ -77,7 +77,7 @@ export const isFetchingState = (
 
 const handleFetchSucceeded = <T>(
   previousState: FetchState<T>,
-  event: FetchSucceededEvent<T>
+  event: FetchSucceeded<T>
 ): FetchState<T> => {
   if (isFetchingState(previousState)) {
     return {
@@ -159,7 +159,7 @@ const useFetch = <T = unknown>(
           ? dispatch({ type: "FetchSucceeded", data: json })
           : dispatch({ type: "FetchFailed", error: "UnexpectedResponseType" });
       } catch (e) {
-        dispatch({ type: "FetchFailed", error: "FetchNotCompleted" });
+        dispatch({ type: "FetchFailed", error: "UnknownFetchError" });
       }
     };
 
