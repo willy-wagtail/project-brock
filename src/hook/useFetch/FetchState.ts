@@ -3,35 +3,37 @@ import { FetchError } from "./FetchError";
 export interface FetchErrorState {
   data: null;
   error: FetchError;
-  status: 'Error';
+  status: "Error";
 }
 
 export interface FetchingState {
   data: null;
   error: null;
-  status: 'Fetching';
+  status: "Fetching";
 }
 
-export interface FetchedState<T> {
+export interface FetchSuccessState<T> {
   data: T;
   error: null;
-  status: 'Success';
+  status: "Success";
 }
 
 export interface FetchIdleState {
   data: null;
   error: null;
-  status: 'Idle';
+  status: "Idle";
 }
 
 export type FetchState<T> =
   | FetchIdleState
   | FetchingState
-  | FetchedState<T>
+  | FetchSuccessState<T>
   | FetchErrorState;
 
 export const isFetchingState = (
   state: FetchState<any>
 ): state is FetchingState => {
-  return state.data === null && state.error === null && state.status === 'Fetching';
+  return (
+    state.data === null && state.error === null && state.status === "Fetching"
+  );
 };

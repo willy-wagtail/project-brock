@@ -10,4 +10,4 @@ export interface FetchFailed {
   error: FetchError;
 }
 
-export type FetchEvent<T> = FetchSucceeded<T> | FetchFailed;
+export type FetchAction<T> = FetchSucceeded<T> | FetchFailed;

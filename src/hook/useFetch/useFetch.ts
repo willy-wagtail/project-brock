@@ -1,5 +1,5 @@
 import { Reducer, useEffect, useReducer } from "react";
-import { FetchEvent } from "./FetchEvent";
+import { FetchAction } from "./FetchAction";
 import fetchReducer from "./fetchReducer";
 import { FetchState } from "./FetchState";
 
@@ -7,12 +7,12 @@ const useFetch = <T = unknown>(
   url: string,
   typeGuard: (x: any) => x is T
 ): FetchState<T> => {
-  const [state, dispatch] = useReducer<Reducer<FetchState<T>, FetchEvent<T>>>(
+  const [state, dispatch] = useReducer<Reducer<FetchState<T>, FetchAction<T>>>(
     fetchReducer,
     {
       data: null,
       error: null,
-      status: 'Idle',
+      status: "Idle",
     }
   );
 

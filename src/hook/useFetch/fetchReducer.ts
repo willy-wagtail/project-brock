@@ -1,14 +1,14 @@
-import { FetchSucceeded, FetchFailed, FetchEvent } from "./FetchEvent";
+import { FetchSucceeded, FetchFailed, FetchAction } from "./FetchAction";
 import { FetchState, isFetchingState } from "./FetchState";
 
 const handleFetchSucceeded = <T>(
   previousState: FetchState<T>,
-  event: FetchSucceeded<T>
+  action: FetchSucceeded<T>
 ): FetchState<T> => {
   if (isFetchingState(previousState)) {
     return {
-      status: 'Success',
-      data: event.data,
+      status: "Success",
+      data: action.data,
       error: null,
     };
   } else {
@@ -20,13 +20,13 @@ const handleFetchSucceeded = <T>(
 
 const handleFetchFailed = <T>(
   previousState: FetchState<T>,
-  event: FetchFailed
+  action: FetchFailed
 ): FetchState<T> => {
   if (isFetchingState(previousState)) {
     return {
-      status: 'Error',
+      status: "Error",
       data: null,
-      error: event.error,
+      error: action.error,
     };
   } else {
     return {
@@ -37,15 +37,15 @@ const handleFetchFailed = <T>(
 
 const fetchReducer = <T>(
   previousState: FetchState<T>,
-  event: FetchEvent<T>
+  action: FetchAction<T>
 ): FetchState<T> => {
-  switch (event.type) {
+  switch (action.type) {
     case "FetchSucceeded": {
-      return handleFetchSucceeded<T>(previousState, event);
+      return handleFetchSucceeded<T>(previousState, action);
     }
 
     case "FetchFailed": {
-      return handleFetchFailed(previousState, event);
+      return handleFetchFailed(previousState, action);
     }
   }
 };
