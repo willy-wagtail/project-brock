@@ -1,2 +1,1 @@
-- ~~component library ~~ - DONE (`npm install react-bootstrap bootstrap`)
-- linter/prettier
+- set base url in env vars like this: `const baseUrl = process.env.REACT_APP_API_BASE_URL;`

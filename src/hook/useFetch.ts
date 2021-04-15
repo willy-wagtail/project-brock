@@ -19,6 +19,7 @@ type FetchEvent<T> = FetchSucceeded<T> | FetchFailed;
 /**
  * Errors
  */
+
 export type ResponseNotOk = "ResponseNotOk";
 
 export type UnexpectedResponseType = "UnexpectedResponseType";
@@ -37,25 +38,25 @@ export type FetchError =
 export interface FetchErrorState {
   data: null;
   error: FetchError;
-  loading: false;
+  status: 'Error';
 }
 
 export interface FetchingState {
   data: null;
   error: null;
-  loading: true;
+  status: 'Fetching';
 }
 
 export interface FetchedState<T> {
   data: T;
   error: null;
-  loading: false;
+  status: 'Success';
 }
 
 export interface FetchIdleState {
   data: null;
   error: null;
-  loading: false;
+  status: 'Idle';
 }
 
 export type FetchState<T> =
@@ -67,7 +68,7 @@ export type FetchState<T> =
 export const isFetchingState = (
   state: FetchState<any>
 ): state is FetchingState => {
-  return state.data === null && state.error === null && state.loading === true;
+  return state.data === null && state.error === null && state.status === 'Fetching';
 };
 
 /**
@@ -80,7 +81,7 @@ const handleFetchSucceeded = <T>(
 ): FetchState<T> => {
   if (isFetchingState(previousState)) {
     return {
-      loading: false,
+      status: 'Success',
       data: event.data,
       error: null,
     };
@@ -97,7 +98,7 @@ const handleFetchFailed = <T>(
 ): FetchState<T> => {
   if (isFetchingState(previousState)) {
     return {
-      loading: false,
+      status: 'Error',
       data: null,
       error: event.error,
     };
@@ -127,8 +128,6 @@ const fetchReducer = <T>(
  * Hook
  */
 
-// const baseUrl = process.env.REACT_APP_API_BASE_URL;
-
 const useFetch = <T = unknown>(
   url: string,
   typeGuard: (x: any) => x is T
@@ -138,7 +137,7 @@ const useFetch = <T = unknown>(
     {
       data: null,
       error: null,
-      loading: false,
+      status: 'Idle',
     }
   );
 
