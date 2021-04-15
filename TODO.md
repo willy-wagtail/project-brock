@@ -1,1 +1,1 @@
-- set base url in env vars like this: `const baseUrl = process.env.REACT_APP_API_BASE_URL;`
+- set base url in env vars like this: `const baseUrl = process.env.BASE_URL;`
