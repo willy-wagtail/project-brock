@@ -1,9 +1,24 @@
 import { Reducer, useEffect, useReducer } from "react";
 
 /**
- * State
+ * Events
  */
 
+interface FetchSucceeded<T> {
+  type: "FetchSucceeded";
+  data: T;
+}
+
+interface FetchFailed {
+  type: "FetchFailed";
+  error: FetchError;
+}
+
+type FetchEvent<T> = FetchSucceeded<T> | FetchFailed;
+
+/**
+ * Errors
+ */
 export type ResponseNotOk = "ResponseNotOk";
 
 export type UnexpectedResponseType = "UnexpectedResponseType";
@@ -14,6 +29,10 @@ export type FetchError =
   | ResponseNotOk
   | UnexpectedResponseType
   | UnknownFetchError;
+
+/**
+ * State
+ */
 
 export interface FetchErrorState {
   data: null;
@@ -45,26 +64,6 @@ export type FetchState<T> =
   | FetchedState<T>
   | FetchErrorState;
 
-/**
- * Events
- */
-
-interface FetchSucceeded<T> {
-  type: "FetchSucceeded";
-  data: T;
-}
-
-interface FetchFailedEvent {
-  type: "FetchFailed";
-  error: FetchError;
-}
-
-type FetchEvent<T> = FetchSucceeded<T> | FetchFailedEvent;
-
-/**
- * Type Guards
- */
-
 export const isFetchingState = (
   state: FetchState<any>
 ): state is FetchingState => {
@@ -94,7 +93,7 @@ const handleFetchSucceeded = <T>(
 
 const handleFetchFailed = <T>(
   previousState: FetchState<T>,
-  event: FetchFailedEvent
+  event: FetchFailed
 ): FetchState<T> => {
   if (isFetchingState(previousState)) {
     return {
