@@ -1,12 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./component/app/App";
+import ErrorBoundary from "./component/error-boundary/ErrorBoundary";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")
 );
