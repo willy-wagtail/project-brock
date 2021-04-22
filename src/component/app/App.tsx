@@ -1,26 +1,37 @@
-import React from "react";
-import logo from "../../logo.svg";
-import "./App.css";
+import React, { FC } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import { BrowserRouter } from "react-router-dom";
+import ErrorBoundary from "../error-boundary/ErrorBoundary";
+import AppHeader from "./AppHeader";
+import Routes from "./routes/Routes";
+import SideNav from "./side-nav/SideNav";
 
-function App() {
+const App: FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Container fluid className="h-100">
+            <Row>
+              <Col className="p-0">
+                <AppHeader />
+              </Col>
+            </Row>
+
+            <Row className="h-100">
+              <Col md="2">
+                <SideNav />
+              </Col>
+
+              <Col md="10">
+                <Routes />
+              </Col>
+            </Row>
+          </Container>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </>
   );
-}
+};
 
 export default App;
