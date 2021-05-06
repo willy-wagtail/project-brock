@@ -4,7 +4,7 @@ export type UnexpectedResponseType = "UnexpectedResponseType";
 
 export type UnknownFetchError = "UnknownFetchError";
 
-export type FetchError =
+export type HttpGetError =
   | ResponseNotOk
   | UnexpectedResponseType
   | UnknownFetchError;

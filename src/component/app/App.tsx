@@ -2,9 +2,9 @@ import React, { FC } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { BrowserRouter } from "react-router-dom";
 import ErrorBoundary from "../error-boundary/ErrorBoundary";
-import AppHeader from "./AppHeader";
-import Routes from "./routes/Routes";
-import SideNav from "./side-nav/SideNav";
+import AppHeader from "./component/AppHeader";
+import Routes from "./component/Routes";
+import SideNav from "./component/SideNav";
 
 const App: FC = () => {
   return (

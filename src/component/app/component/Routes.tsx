@@ -1,6 +1,8 @@
 import React, { FC } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import injectNavConfig, { InjectedNavConfigProps } from "../injectNavConfig/injectNavConfig";
+import injectNavConfig, {
+  InjectedNavConfigProps,
+} from "../hoc/injectNavConfig";
 
 type RoutesProps = InjectedNavConfigProps;
 

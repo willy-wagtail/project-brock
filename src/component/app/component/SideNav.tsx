@@ -3,7 +3,7 @@ import { Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import injectNavConfig, {
   InjectedNavConfigProps,
-} from "../injectNavConfig/injectNavConfig";
+} from "../hoc/injectNavConfig";
 
 type SideNavProps = InjectedNavConfigProps;
 
