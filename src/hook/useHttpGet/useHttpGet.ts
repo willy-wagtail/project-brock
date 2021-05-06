@@ -6,17 +6,19 @@ import {
   useRef,
 } from "react";
 import { HttpGetAction } from "./HttpGetAction";
+import { HttpGetError } from "./HttpGetError";
 import httpGetReducer from "./httpGetReducer";
-import { HttpGetState } from "./HttpGetState";
+import { HttpGetState, isHttpErrorState } from "./HttpGetState";
 
 export interface UseHttpGet<T = unknown> {
-  state: HttpGetState<T>;
-  refresh: () => void;
+  readonly state: HttpGetState<T>;
+  readonly refresh: () => void;
 }
 
 const useHttpGet = <T = unknown>(
   url: string,
-  typeGuard: (res: unknown) => res is T
+  typeGuard: (res: unknown) => res is T,
+  onError: (error: HttpGetError) => void
 ): UseHttpGet<T> => {
   const isMounted: MutableRefObject<boolean> = useRef<boolean>(false);
 
@@ -63,6 +65,12 @@ const useHttpGet = <T = unknown>(
       isMounted.current = false;
     };
   }, [typeGuard, url]);
+
+  useEffect(() => {
+    if (isHttpErrorState(state)) {
+      onError(state.error);
+    }
+  }, [state]);
 
   return {
     state,

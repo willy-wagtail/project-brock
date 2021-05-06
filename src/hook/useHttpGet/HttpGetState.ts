@@ -34,6 +34,14 @@ export const isHttpGettingState = (
   state: HttpGetState<any>
 ): state is HttpGettingState => {
   return (
-    state.data === null && state.error === null && state.status === "Getting"
+    state.status === "Getting" && state.data === null && state.error === null
+  );
+};
+
+export const isHttpErrorState = (
+  state: HttpGetState<any>
+): state is HttpGetErrorState => {
+  return (
+    state.status === "Error" && state.data === null && state.error !== null
   );
 };
