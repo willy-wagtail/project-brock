@@ -1,4 +1,8 @@
-import { HttpDeleteAction, HttpDeleteFailed, HttpDeleteSucceeded } from "./HttpDeleteAction";
+import {
+  HttpDeleteAction,
+  HttpDeleteFailed,
+  HttpDeleteSucceeded,
+} from "./HttpDeleteAction";
 import { HttpDeleteState, isHttpDeletingState } from "./HttpDeleteState";
 
 const handleHttpDeleting = (

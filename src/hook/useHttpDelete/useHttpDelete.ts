@@ -10,10 +10,15 @@ import { HttpDeleteError } from "./HttpDeleteError";
 import httpDeleteReducer from "./httpDeleteReducer";
 import { HttpDeleteState, isHttpErrorState } from "./HttpDeleteState";
 
+export interface UseHttpDelete {
+  readonly state: HttpDeleteState;
+  readonly httpDelete: () => void;
+}
+
 const useHttpDelete = (
   url: string,
   onError: (error: HttpDeleteError) => void
-): HttpDeleteState => {
+): UseHttpDelete => {
   const isMounted: MutableRefObject<boolean> = useRef<boolean>(false);
 
   const [state, dispatch] = useReducer<
@@ -23,7 +28,7 @@ const useHttpDelete = (
     status: "Idle",
   });
 
-  const httpGet = async (): Promise<void> => {
+  const httpDelete = async (): Promise<void> => {
     try {
       dispatch({ type: "HttpDeleting" });
       const response: Response = await fetch(url);
@@ -33,27 +38,11 @@ const useHttpDelete = (
         return;
       }
 
-      dispatch({ type: "HttpDeleteSucceeded"});
+      dispatch({ type: "HttpDeleteSucceeded" });
     } catch (e) {
       dispatch({ type: "HttpDeleteFailed", error: "UnknownFetchError" });
     }
   };
-
-  const refresh = async () => {
-    await httpGet();
-  };
-
-  useEffect(() => {
-    isMounted.current = true;
-
-    const init = async () => await httpGet();
-
-    init();
-
-    return () => {
-      isMounted.current = false;
-    };
-  }, [url]);
 
   useEffect(() => {
     if (isHttpErrorState(state)) {
@@ -61,5 +50,10 @@ const useHttpDelete = (
     }
   }, [state]);
 
-  return state;
+  return {
+    state,
+    httpDelete,
+  };
 };
+
+export default useHttpDelete;
