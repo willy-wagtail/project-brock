@@ -31,7 +31,12 @@ const useHttpDelete = (
   const httpDelete = async (): Promise<void> => {
     try {
       dispatch({ type: "HttpDeleting" });
-      const response: Response = await fetch(url);
+      
+      const response: Response = await fetch(url, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json'},
+        credentials: 'same-origin'
+      });
 
       if (!response.ok) {
         dispatch({ type: "HttpDeleteFailed", error: "ResponseNotOk" });
