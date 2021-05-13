@@ -1,17 +1,17 @@
 import { HttpGetError } from "./HttpGetError";
 
 export interface HttpGetSucceeded<T = unknown> {
-  type: "HttpGetSucceeded";
-  data: T;
+  readonly type: "HttpGetSucceeded";
+  readonly data: T;
 }
 
 export interface HttpGetFailed {
-  type: "HttpGetFailed";
-  error: HttpGetError;
+  readonly type: "HttpGetFailed";
+  readonly error: HttpGetError;
 }
 
 export interface HttpGetting {
-  type: "HttpGetting";
+  readonly type: "HttpGetting";
 }
 
 export type HttpGetAction<T = unknown> =

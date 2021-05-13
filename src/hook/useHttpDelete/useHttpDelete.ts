@@ -31,11 +31,11 @@ const useHttpDelete = (
   const httpDelete = async (): Promise<void> => {
     try {
       dispatch({ type: "HttpDeleting" });
-      
+
       const response: Response = await fetch(url, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json'},
-        credentials: 'same-origin'
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
       });
 
       if (!response.ok) {

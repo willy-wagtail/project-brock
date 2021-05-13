@@ -12,7 +12,7 @@ export interface HttpGettingState {
   status: "Getting";
 }
 
-export interface HttpGetSuccessState<T> {
+export interface HttpGetSuccessState<T = unknown> {
   data: T;
   error: null;
   status: "Success";
@@ -24,7 +24,7 @@ export interface HttpGetIdleState {
   status: "Idle";
 }
 
-export type HttpGetState<T> =
+export type HttpGetState<T = unknown> =
   | HttpGetIdleState
   | HttpGettingState
   | HttpGetSuccessState<T>
