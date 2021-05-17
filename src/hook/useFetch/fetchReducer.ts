@@ -1,10 +1,9 @@
 import {
   FailedFetchAction,
   FetchAction,
-  SucceededFetchAction,
-  TriggerFetchAction,
+  SucceededFetchAction
 } from "./FetchAction";
-import { FetchState } from "./FetchState";
+import { FetchState, isFetchingState } from "./FetchState";
 
 const fetchReducer = <T = unknown>(
   previousState: FetchState<T>,
@@ -12,7 +11,7 @@ const fetchReducer = <T = unknown>(
 ): FetchState<T> => {
   switch (action.type) {
     case "Succeeded": {
-      return handleSucceededFetch(previousState, action);
+      return handleSucceededFetch<T>(previousState, action);
     }
 
     case "Failed": {
@@ -20,30 +19,53 @@ const fetchReducer = <T = unknown>(
     }
 
     case "Trigger": {
-      return handleTriggerFetch(previousState, action);
+      return handleTriggerFetch(previousState);
     }
   }
 };
 
 const handleSucceededFetch = <T>(
   previousState: FetchState<T>,
-  action: SucceededFetchAction
+  action: SucceededFetchAction<T>
 ): FetchState<T> => {
-  return { ...previousState };
+  if (isFetchingState(previousState)) {
+    return {
+      status: "Succeeded",
+      data: action.data,
+      errorType: null,
+      errorMessage: null,
+      lastSuccess: new Date(),
+    };
+  } else {
+    return { ...previousState };
+  }
 };
 
 const handleFailedFetch = <T>(
   previousState: FetchState<T>,
   action: FailedFetchAction
 ): FetchState<T> => {
-  return { ...previousState };
+  if (isFetchingState(previousState)) {
+    return {
+      status: "Failed",
+      data: null,
+      errorType: action.errorType,
+      errorMessage: action.errorMessage,
+      lastSuccess: previousState.lastSuccess,
+    };
+  } else {
+    return { ...previousState };
+  }
 };
 
-const handleTriggerFetch = <T>(
-  previousState: FetchState<T>,
-  action: TriggerFetchAction<T>
-): FetchState<T> => {
-  return { ...previousState };
+const handleTriggerFetch = <T>(previousState: FetchState<T>): FetchState<T> => {
+  return {
+    status: "Triggered",
+    data: null,
+    errorType: null,
+    errorMessage: null,
+    lastSuccess: previousState.lastSuccess,
+  };
 };
 
 export default fetchReducer;

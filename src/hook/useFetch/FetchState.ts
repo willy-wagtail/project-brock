@@ -1,38 +1,54 @@
 import { FetchErrorType } from "./FetchErrorType";
 
-export interface IdlingState {
-  status: "Idling";
+export interface InitialState {
+  status: "Init";
+  data: null;
+  errorType: null;
+  errorMessage: null;
+  lastSuccess: null;
 }
 
-interface NonIdlingState<T = unknown> {
-  url: string;
-  requestInit: RequestInit;
-  responseTypeGuard: (res: unknown) => res is T;
-}
-
-export interface TriggeredState<T = unknown> extends NonIdlingState<T> {
+export interface TriggeredState {
   status: "Triggered";
+  data: null;
+  errorType: null;
+  errorMessage: null;
+  lastSuccess: Date | null; // todo use luxon or moment
 }
 
-export interface FetchingState<T = unknown> extends NonIdlingState<T> {
+export interface FetchingState {
   status: "Fetching";
+  data: null;
+  errorType: null;
+  errorMessage: null;
+  lastSuccess: Date | null;
 }
 
-export interface SucceededState<T = unknown> extends NonIdlingState<T> {
+export interface SucceededState<T = unknown> {
   status: "Succeeded";
+  data: T;
+  errorType: null;
+  errorMessage: null;
+  lastSuccess: Date;
 }
 
-export interface FailedState<T = unknown> extends NonIdlingState<T> {
+export interface FailedState {
   status: "Failed";
+  data: null;
   errorType: FetchErrorType;
+  errorMessage: string | null;
+  lastSuccess: Date | null;
 }
 
 export type FetchState<T = unknown> =
-  | IdlingState
-  | TriggeredState<T>
-  | FetchingState<T>
+  | InitialState
+  | TriggeredState
+  | FetchingState
   | SucceededState<T>
-  | FailedState<T>;
+  | FailedState;
 
 export const isFailedState = (state: FetchState): state is FailedState =>
   state.status === "Failed";
+
+export const isFetchingState = (state: FetchState): state is FetchingState =>
+  state.status === "Fetching";

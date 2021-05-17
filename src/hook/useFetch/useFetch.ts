@@ -12,53 +12,80 @@ import { FetchState, isFailedState } from "./FetchState";
 
 export interface UseFetch<T = unknown> {
   state: FetchState;
-  triggerFetch: (
-    url: string,
-    requestInit: RequestInit,
-    responseTypeGuard: (res: unknown) => res is T
-  ) => void;
+  triggerFetch: () => void;
 }
 
 const useFetch = <T = unknown>(
-  onError: (error: FetchErrorType) => void
+  url: string,
+  requestInit: RequestInit,
+  responseTypeGuard: (res: unknown) => res is T,
+  onError: (error: FetchErrorType) => void,
+  triggerOnInit: boolean = false
 ): UseFetch<T> => {
   const cancelRequest: MutableRefObject<boolean> = useRef<boolean>(false);
 
-  const [state, dispatch] = useReducer<Reducer<FetchState, FetchAction>>(
+  const [state, dispatch] = useReducer<Reducer<FetchState<T>, FetchAction<T>>>(
     fetchReducer,
-    { status: "Idling" }
+    {
+      status: "Init",
+      data: null,
+      errorType: null,
+      errorMessage: null,
+      lastSuccess: null,
+    }
   );
 
-  const triggerFetch = (
-    url: string,
-    requestInit: RequestInit,
-    responseTypeGuard: (res: unknown) => res is T
-  ): void => {
-    dispatch({ type: "Trigger", url, requestInit, responseTypeGuard });
-  };
+  const triggerFetch = (): void => dispatch({ type: "Trigger" });
 
   const doFetch = async () => {
-    if (state.status === "Triggered") {
-      try {
-        const response: Response = await fetch(state.url, state.requestInit);
+    try {
+      const response: Response = await fetch(url, requestInit);
 
-        if (!response.ok) {
-          dispatch({ type: "Failed", errorType: "ResponseNotOk" });
-        }
-
-        const data: unknown = await extractResponseData(response);
-
-        state.responseTypeGuard(data)
-          ? dispatch({ type: "Succeeded", data })
-          : dispatch({ type: "Failed", errorType: "UnexpectedResponseType" });
-      } catch (e) {
-        dispatch({ type: "Failed", errorType: "OtherFetchError" });
+      if (!response.ok) {
+        dispatch({
+          type: "Failed",
+          errorType: "ResponseNotOk",
+          errorMessage: response.status + " " + response.statusText,
+        });
       }
+
+      const data: unknown = await extractResponseData(response);
+
+      responseTypeGuard(data)
+        ? dispatch({ type: "Succeeded", data })
+        : dispatch({
+            type: "Failed",
+            errorType: "UnexpectedResponseType",
+            errorMessage:
+              "HTTP response has failed type guard: " + JSON.stringify(data),
+          });
+    } catch (e) {
+      let errorMessage: string | null = null;
+
+      if (e instanceof Error) {
+        errorMessage = e.message;
+      } else if (typeof e === "string") {
+        errorMessage = e;
+      }
+
+      dispatch({
+        type: "Failed",
+        errorType: "OtherFetchError",
+        errorMessage,
+      });
     }
   };
 
   useEffect(() => {
-    doFetch();
+    if (triggerOnInit === true) {
+      triggerFetch();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state.status === "Triggered") {
+      doFetch();
+    }
 
     return () => {
       cancelRequest.current = true;

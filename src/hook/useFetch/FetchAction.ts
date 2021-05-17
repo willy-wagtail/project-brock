@@ -1,15 +1,13 @@
 import { FetchErrorType } from "./FetchErrorType";
 
-export interface TriggerFetchAction<T = unknown> {
+export interface TriggerFetchAction {
   type: "Trigger";
-  url: string;
-  requestInit: RequestInit;
-  responseTypeGuard: (res: unknown) => res is T;
 }
 
 export interface FailedFetchAction {
   type: "Failed";
   errorType: FetchErrorType;
+  errorMessage: string | null;
 }
 
 export interface SucceededFetchAction<T = unknown> {
@@ -18,6 +16,6 @@ export interface SucceededFetchAction<T = unknown> {
 }
 
 export type FetchAction<T = unknown> =
-  | TriggerFetchAction<T>
+  | TriggerFetchAction
   | FailedFetchAction
   | SucceededFetchAction<T>;
