@@ -1,7 +1,7 @@
 import {
   FailedFetchAction,
   FetchAction,
-  SucceededFetchAction
+  SucceededFetchAction,
 } from "./FetchAction";
 import { FetchState, isFetchingState } from "./FetchState";
 

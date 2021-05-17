@@ -37,7 +37,7 @@ const useFetch = <T = unknown>(
 
   const triggerFetch = (): void => dispatch({ type: "Trigger" });
 
-  const doFetch = async () => {
+  const doFetch = async (): Promise<void> => {
     try {
       const response: Response = await fetch(url, requestInit);
 
@@ -83,7 +83,7 @@ const useFetch = <T = unknown>(
   }, []);
 
   useEffect(() => {
-    if (state.status === "Triggered") {
+    if (state.status === "Triggered" && !cancelRequest.current) {
       doFetch();
     }
 
@@ -93,7 +93,7 @@ const useFetch = <T = unknown>(
   }, [state]);
 
   useEffect(() => {
-    if (isFailedState(state) && !cancelRequest.current) {
+    if (isFailedState(state)) {
       onError(state.errorType);
     }
   }, [state, onError, cancelRequest]);

@@ -1,8 +1,7 @@
-import React, { FC } from "react";
+import React, { createElement, FC } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import injectNavConfig, {
-  InjectedNavConfigProps,
-} from "../hoc/injectNavConfig";
+import withNavConfig, { InjectedNavConfigProps } from "../hoc/withNavConfig";
+import { NavItem, PageNotFoundItem } from "../model/NavConfig";
 
 type RoutesProps = InjectedNavConfigProps;
 
@@ -10,9 +9,7 @@ const Routes: FC<RoutesProps> = ({ navConfig }) => {
   return (
     <Switch>
       {navConfig.map((item) => (
-        <Route path={item.url}>
-          <p>{item.text}</p>
-        </Route>
+        <Route path={item.url}>{createElement(item.component)}</Route>
       ))}
 
       <Redirect path="*" to="/404" />
@@ -20,4 +17,4 @@ const Routes: FC<RoutesProps> = ({ navConfig }) => {
   );
 };
 
-export default injectNavConfig(Routes);
+export default withNavConfig(Routes);
